@@ -1,6 +1,7 @@
 var fs = require('fs');
 var path = require('path');
 var _ = require('underscore');
+var http = require('http');
 
 /*
  * You will need to reuse the same paths many times over in the course of this sprint.
@@ -26,7 +27,7 @@ exports.initialize = function(pathsObj) {
 // modularize your code. Keep it clean!
 
 exports.readListOfUrls = function(callback) {
-  fs.readFile(exports.paths, 'utf8', (err, data) =>{
+  fs.readFile(exports.paths.list, 'utf8', (err, data) =>{
     if (err) {
       throw err;
     }
@@ -39,21 +40,26 @@ exports.readListOfUrls = function(callback) {
 
 exports.isUrlInList = function(url, callback) {
   exports.readListOfUrls(urlList => {
-    if (urlList.contains(url)) {
-      callback(url);
-      return true;
-    }
-    return false;
+    // if (urlList.contains(url)) {
+      //callback(url);
+      // temp = true;
+    // }
+  console.log('inner url is', url);
+console.log('callback within a callback', callback(urlList.contains(url)));
+    // temp = false;
+
+  // console.log('temp is ', temp)
   });
 };
 
 exports.addUrlToList = function(url, callback) {
-  fs.writeFile(exports.paths.list, url, (err, data)=>{
+  fs.appendFile(exports.paths.list, url, (err, data)=>{
     if (err) {
+      console.log('could not add', err);
       throw err;
     }
     if (data) {
-      console.log(data);
+      console.log('adding url', data);
       callback(data);
     }
   });
@@ -72,4 +78,12 @@ exports.isUrlArchived = function(url, callback) {
 };
 
 exports.downloadUrls = function(urls) {
+  _.each(urls, (url) =>{
+    let file = fs.createWriteStream(`${exports.paths.archivedSites}/${url}`);
+    http.get(url, (res) => {
+      res.pipe(file);      
+    });
+  });
+
+
 };
