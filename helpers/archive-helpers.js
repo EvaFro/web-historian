@@ -39,16 +39,8 @@ exports.readListOfUrls = function(callback) {
 };
 
 exports.isUrlInList = function(url, callback) {
-  exports.readListOfUrls(urlList => {
-    // if (urlList.contains(url)) {
-      //callback(url);
-      // temp = true;
-    // }
-  console.log('inner url is', url);
-console.log('callback within a callback', callback(urlList.contains(url)));
-    // temp = false;
-
-  // console.log('temp is ', temp)
+  exports.readListOfUrls((urlList) => {
+    callback(urlList.includes(url));
   });
 };
 
