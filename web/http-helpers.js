@@ -15,7 +15,6 @@ exports.serveAssets = function(res, asset, callback) {
   // (Static files are things like html (yours or archived from others...),
   // css, or anything that doesn't change often.)
   console.log("Incoming asset = ", asset);
-  res.writeHead(200, this.headers);
   fs.readFile(asset, 'utf8', (err, data) => {
     if (err) {
       res.writeHead(404);
@@ -24,7 +23,7 @@ exports.serveAssets = function(res, asset, callback) {
       return;
     }
     console.log('data looks like this', data);
-
+    res.writeHead(200, this.headers);
     res.end(data);
   });
 
