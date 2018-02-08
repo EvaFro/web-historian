@@ -14,6 +14,22 @@ exports.serveAssets = function(res, asset, callback) {
   // Write some code here that helps serve up your static files!
   // (Static files are things like html (yours or archived from others...),
   // css, or anything that doesn't change often.)
+  console.log("Incoming asset = ", asset);
+  res.writeHead(200, this.headers);
+  fs.readFile(asset, 'utf8', (err, data) => {
+    if (err) {
+      res.writeHead(404);
+      console.log('somehting went wrong', err);
+      res.end();
+      return;
+    }
+    console.log('data looks like this', data);
+
+    res.end(data);
+  });
+
+  console.log('responding to this type of stuff ====');
+  
 };
 
 
