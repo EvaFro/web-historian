@@ -22,7 +22,6 @@ exports.serveAssets = function(res, asset, callback) {
       return;
     }
     console.log('data looks like this', data);
-    res.writeHead(200, this.headers);
     res.end(data);
   });
 
