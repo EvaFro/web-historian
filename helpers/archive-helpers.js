@@ -32,7 +32,7 @@ exports.readListOfUrls = function(callback) {
       throw err;
     }
     if (data) {
-      console.log(data);
+      console.log('some message for reading list',data);
       callback(data);
     }
   });
@@ -49,8 +49,7 @@ exports.addUrlToList = function(url, callback) {
     if (err) {
       console.log('could not add', err);
       throw err;
-    }
-    if (data) {
+    } else {
       console.log('adding url', data);
       callback(data);
     }
