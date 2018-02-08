@@ -30,10 +30,9 @@ exports.readListOfUrls = function(callback) {
   fs.readFile(exports.paths.list, 'utf8', (err, data) =>{
     if (err) {
       throw err;
-    }
-    if (data) {
-      console.log('some message for reading list',data);
-      callback(data);
+    } else {
+      console.log('some message for reading list', data);
+      callback(data.toString().split('\n'));
     }
   });
 };
@@ -45,7 +44,7 @@ exports.isUrlInList = function(url, callback) {
 };
 
 exports.addUrlToList = function(url, callback) {
-  fs.appendFile(exports.paths.list, url, (err, data)=>{
+  fs.appendFile(exports.paths.list, (url + '\n'), (err, data)=>{
     if (err) {
       console.log('could not add', err);
       throw err;
@@ -61,18 +60,22 @@ exports.isUrlArchived = function(url, callback) {
     if (err) {
       throw err;
     } 
-   
-    if (files.includes(url)) {
-      callback(url);
-    }
+    callback(files.includes(url));
   });
 };
 
 exports.downloadUrls = function(urls) {
   _.each(urls, (url) =>{
-    let file = fs.createWriteStream(`${exports.paths.archivedSites}/${url}`);
-    http.get(url, (res) => {
-      res.pipe(file);      
+    http.get(`http://${url}`, (res) => {
+      let file = '';
+      res.on('data', (chunk) =>{
+        file += chunk.toString();
+      });
+      res.on('end', () => {
+        fs.writeFile(`${exports.paths.archivedSites}/${url}`, file, (err)=> {
+          if (err) { console.log("error is happening here", err); }
+        });
+      });
     });
   });
 
