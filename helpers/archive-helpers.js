@@ -18,7 +18,7 @@ exports.paths = {
 // Used for stubbing paths for tests, do not modify
 exports.initialize = function(pathsObj) {
   _.each(pathsObj, function(path, type) {
-    exports.paths[type] = path;
+    exports.paths[type] = path; 
   });
 };
 
@@ -26,15 +26,49 @@ exports.initialize = function(pathsObj) {
 // modularize your code. Keep it clean!
 
 exports.readListOfUrls = function(callback) {
+  fs.readFile(exports.paths, 'utf8', (err, data) =>{
+    if (err) {
+      throw err;
+    }
+    if (data) {
+      console.log(data);
+      callback(data);
+    }
+  });
 };
 
 exports.isUrlInList = function(url, callback) {
+  exports.readListOfUrls(urlList => {
+    if (urlList.contains(url)) {
+      callback(url);
+      return true;
+    }
+    return false;
+  });
 };
 
 exports.addUrlToList = function(url, callback) {
+  fs.writeFile(exports.paths.list, url, (err, data)=>{
+    if (err) {
+      throw err;
+    }
+    if (data) {
+      console.log(data);
+      callback(data);
+    }
+  });
 };
 
 exports.isUrlArchived = function(url, callback) {
+  fs.readdir(exports.paths.archivedSites, (err, files) => {
+    if (err) {
+      throw err;
+    } 
+   
+    if (files.includes(url)) {
+      callback(url);
+    }
+  });
 };
 
 exports.downloadUrls = function(urls) {
